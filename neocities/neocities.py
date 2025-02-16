@@ -72,14 +72,20 @@ class NeoCities:
             A JSON-decoded request
 
         """
-        args = {'filenames[]': []}
-        for i in filenames:
-            args['filenames[]'].append(i)
+        args = {'filenames[]': filenames}  # Simplified argument handling
+        headers = {}
+        
         if self.api_key:
-            response = requests.get(self._request_url('delete'), data=args, headers={'Authorization':'Bearer '+self.api_key})
-        else:
-            response = requests.post(self._request_url('delete'), auth=self.auth, data=args)
+            headers['Authorization'] = f'Bearer {self.api_key}'
+        
+        # Always use POST:
+        response = requests.post(
+            self._request_url('delete'),
+            data=args,
+            headers=headers
+        )
         return self._decode(response)
+
 
     def upload(self, *filenames):
         """
